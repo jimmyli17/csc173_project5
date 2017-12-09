@@ -87,6 +87,46 @@ static Circuit* CircuitC(){
 	return new_Circuit(2, inputs, 1, outputs, 5, gates);
 }
 
+static Circuit* Circuit_One_Bit_Adder(){
+	Value* inX = new_Value(false);
+	Value* inY = new_Value(false);
+	Value* inC = new_Value(false);
+	Gate* not1 = new_Inverter(inX);
+	Gate* not2 = new_Inverter(inY);
+	Gate* not3 = new_Inverter(inC);
+	Gate* and1 = new_And3Gate(Gate_getOutput(not1),Gate_getOutput(not2),inC);
+	Gate* and2 = new_And3Gate(Gate_getOutput(not1), inY, Gate_getOutput(not3));
+	Gate* and3 = new_And3Gate(Gate_getOutput(not1), inY, inC);
+	Gate* and4 = new_And3Gate(inX, Gate_getOutput(not2), Gate_getOutput(not3));
+	Gate* and5 = new_And3Gate(inX, Gate_getOutput(not2), inC);
+	Gate* and6 = new_And3Gate(Gate_getOutput(not3),inY, inX);
+	Gate* and7 = new_And3Gate(inX,inY, inC);
+	Gate* or1 = new_Or4Gate(Gate_getOutput(and1),Gate_getOutput(and2), Gate_getOutput(and4), Gate_getOutput(and7));
+	Gate* or2 = new_Or4Gate(Gate_getOutput(and3), Gate_getOutput(and5), Gate_getOutput(and6), Gate_getOutput(and7));
+
+	Value** inputs = new_Value_array(3);
+	inputs[0] = inX;
+	inputs[1] = inY;
+	inputs[2] = inC;
+	Value** outputs = new_Value_array(2);
+	outputs[0] = Gate_getOutput(or1); //Output z, the sum
+	outputs[1] = Gate_getOutput(or2); //Output d, the carry-out
+	Gate** gates = new_Gate_array(12);
+	gates[0] = not1;
+	gates[1] = not2;
+	gates[2] = not3;
+	gates[3] = and1;
+	gates[4] = and2;
+	gates[5] = and3;
+	gates[6] = and4;
+	gates[7] = and5;
+	gates[8] = and6;
+	gates[9] = and7;
+	gates[10] = or1;
+	gates[11] = or2;
+	return new_Circuit(3, inputs, 2, outputs, 12, gates);
+}
+
 static char* b2s(bool b) {
 	return b ? "T" : "F";
 }
@@ -139,11 +179,21 @@ static void testAllPossibleCombinations(Circuit* circuit){
 		}
 		Circuit_update(circuit);
 		bool out0 = Circuit_getOutput(circuit, 0);
+		bool out1;
+		if (Circuit_numOutputs(circuit)==2) {
+			out1 = Circuit_getOutput(circuit, 1);
+		}
 
 		for (q = 0; q < numInputs; q++){
 			printf("%s ", b2s(allCombos[o][q]));
 		}
-		printf("-> %s\n", b2s(out0));
+
+		if (Circuit_numOutputs(circuit)==2) {
+			printf("-> %s", b2s(out0));
+			printf(" %s\n", b2s(out1));
+		} else {
+			printf("-> %s\n", b2s(out0));
+		}
 	}
 }
 
@@ -161,4 +211,8 @@ int main(int argc, char **argv) {
 	printf("Circuit (c):\n");
 	printf("Format: x y -> z\n");
 	testAllPossibleCombinations(c2);
+	Circuit* c3 = Circuit_One_Bit_Adder();
+	printf("Circuit (One-Bit Adder):\n");
+	printf("Format: x y c -> d\n");
+	testAllPossibleCombinations(c3);
 }

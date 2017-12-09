@@ -1,0 +1,1 @@
+Collaborators: Jimmy Li, Melissa Kagaju, Sisipho ZinjaCreated: Dec 9th 2017Project 5: Boolean Logic and Boolean CircuitsHow to build & run: Type into terminalmake -f Makefile./boosimExtra-Credit	We did the one-bit adder circuitAcknowledgements	We used the files provided by professor Ferguson

@@ -1,8 +1,7 @@
 /*
  * File: main.c
- * Creator: Jimmy Li
+ * Collaborators: Jimmy Li, Melissa Kagaju, Sisipho Zinja
  * Created: Tue Dec 7 19:11:24 2017
- * Time-stamp: <Tue Dec 10 23:15:42 EDT 2017 li>
  *
  * Project 5:
  * Boolean Logic and Boolean Circuits
@@ -189,8 +188,8 @@ static void testAllPossibleCombinations(Circuit* circuit){
 		}
 
 		if (Circuit_numOutputs(circuit)==2) {
-			printf("-> %s", b2s(out0));
-			printf(" %s\n", b2s(out1));
+			printf("-> %s", b2s(out1));
+			printf(" %s\n", b2s(out0));
 		} else {
 			printf("-> %s\n", b2s(out0));
 		}
@@ -213,6 +212,6 @@ int main(int argc, char **argv) {
 	testAllPossibleCombinations(c2);
 	Circuit* c3 = Circuit_One_Bit_Adder();
 	printf("Circuit (One-Bit Adder):\n");
-	printf("Format: x y c -> d\n");
+	printf("Format: x y carry-in -> carry-out sum-bit\n");
 	testAllPossibleCombinations(c3);
 }
